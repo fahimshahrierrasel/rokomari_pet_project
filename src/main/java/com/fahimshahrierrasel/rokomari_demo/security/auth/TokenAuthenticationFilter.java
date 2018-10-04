@@ -1,8 +1,6 @@
 package com.fahimshahrierrasel.rokomari_demo.security.auth;
 
 import com.fahimshahrierrasel.rokomari_demo.security.TokenHelper;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -15,8 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 public class TokenAuthenticationFilter extends OncePerRequestFilter {
-
-    private final Log logger = LogFactory.getLog(this.getClass());
 
     private TokenHelper tokenHelper;
 

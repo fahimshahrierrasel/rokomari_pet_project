@@ -5,7 +5,6 @@ import com.fahimshahrierrasel.rokomari_demo.model.Doctor;
 import com.fahimshahrierrasel.rokomari_demo.repository.DoctorRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,14 +20,12 @@ public class DoctorController {
 
     // Get All Doctors
     @GetMapping("/doctors")
-    @PreAuthorize("hasRole('ADMIN')")
     public List<Doctor> getAllDoctors() {
         return doctorRepository.findAll();
     }
 
     // Add new Doctor
     @PostMapping("/insert/doctor/new")
-    @PreAuthorize("hasRole('ADMIN')")
     public Doctor addDoctor(@Valid @RequestBody Doctor doctor) {
         return doctorRepository.save(doctor);
     }

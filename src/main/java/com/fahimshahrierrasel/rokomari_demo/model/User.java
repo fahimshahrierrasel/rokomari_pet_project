@@ -7,7 +7,6 @@ import javax.persistence.*;
 import java.util.Collection;
 import java.util.List;
 
-
 @Entity
 @Table(name="USERS")
 public class User implements UserDetails {
@@ -20,7 +19,6 @@ public class User implements UserDetails {
     @Column(name = "username")
     private String username;
 
-    @JsonIgnore
     @Column(name = "password")
     private String password;
 
@@ -32,6 +30,9 @@ public class User implements UserDetails {
 
     @Column(name = "email")
     private String email;
+
+    @Column(name="mobile")
+    private String mobile;
 
     @Column(name = "enabled")
     private boolean enabled;
@@ -84,6 +85,14 @@ public class User implements UserDetails {
 
     public void setAuthorities(List<Authority> authorities) {
         this.authorities = authorities;
+    }
+
+    public String getMobile() {
+        return mobile;
+    }
+
+    public void setMobile(String mobile) {
+        this.mobile = mobile;
     }
 
     @Override

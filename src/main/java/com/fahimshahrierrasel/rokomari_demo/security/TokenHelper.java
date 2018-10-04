@@ -1,7 +1,6 @@
 package com.fahimshahrierrasel.rokomari_demo.security;
 
 import com.fahimshahrierrasel.rokomari_demo.common.TimeProvider;
-import com.fahimshahrierrasel.rokomari_demo.model.User;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
@@ -24,14 +23,13 @@ public class TokenHelper {
 
     private int EXPIRES_IN = 300;
 
-    private String AUTH_HEADER = "Authorization";
+    private  String TOKEN_TYPE = "token";
+    private String AUTH_HEADER = "jwt_token";
 
     static final String AUDIENCE_WEB = "web";
 
     @Autowired
     TimeProvider timeProvider;
-
-    private SignatureAlgorithm SIGNATURE_ALGORITHM = SignatureAlgorithm.HS512;
 
     public String getUsernameFromToken(String token) {
         String username;
@@ -42,45 +40,6 @@ public class TokenHelper {
             username = null;
         }
         return username;
-    }
-
-    public Date getIssuedAtDateFromToken(String token) {
-        Date issueAt;
-        try {
-            final Claims claims = this.getAllClaimsFromToken(token);
-            issueAt = claims.getIssuedAt();
-        } catch (Exception e) {
-            issueAt = null;
-        }
-        return issueAt;
-    }
-
-    public String getAudienceFromToken(String token) {
-        String audience;
-        try {
-            final Claims claims = this.getAllClaimsFromToken(token);
-            audience = claims.getAudience();
-        } catch (Exception e) {
-            audience = null;
-        }
-        return audience;
-    }
-
-    public String refreshToken(String token) {
-        String refreshedToken;
-        Date a = timeProvider.now();
-        try {
-            final Claims claims = this.getAllClaimsFromToken(token);
-            claims.setIssuedAt(a);
-            refreshedToken = Jwts.builder()
-                    .setClaims(claims)
-                    .setExpiration(generateExpirationDate())
-                    .signWith(SECRET, SignatureAlgorithm.HS512)
-                    .compact();
-        } catch (Exception e) {
-            refreshedToken = null;
-        }
-        return refreshedToken;
     }
 
     public String generateToken(String username) {
@@ -122,18 +81,8 @@ public class TokenHelper {
     }
 
     public Boolean validateToken(String token, UserDetails userDetails) {
-        User user = (User) userDetails;
         final String username = getUsernameFromToken(token);
-        final Date created = getIssuedAtDateFromToken(token);
-        return (
-                username != null &&
-                        username.equals(userDetails.getUsername()) &&
-                        !isCreatedBeforeLastPasswordReset(created, user.getLastPasswordResetDate())
-        );
-    }
-
-    private Boolean isCreatedBeforeLastPasswordReset(Date created, Date lastPasswordReset) {
-        return (lastPasswordReset != null && created.before(lastPasswordReset));
+        return (username != null && username.equals(userDetails.getUsername()));
     }
 
     public String getToken( HttpServletRequest request ) {
@@ -141,12 +90,19 @@ public class TokenHelper {
          *  Getting the token from Authentication header
          *  e.g Bearer your_token
          */
-        String authHeader = getAuthHeaderFromHeader( request );
-        if ( authHeader != null && authHeader.startsWith("Bearer ")) {
-            return authHeader.substring(7);
+
+        String authHeader = getAuthHeaderFromHeader(request);
+        String tokenType = getTokenType(request);
+
+        if ( authHeader != null && tokenType.equals("Bearer") ) {
+            return authHeader;
         }
 
         return null;
+    }
+
+    public String getTokenType( HttpServletRequest request) {
+        return request.getHeader(TOKEN_TYPE);
     }
 
     public String getAuthHeaderFromHeader( HttpServletRequest request ) {

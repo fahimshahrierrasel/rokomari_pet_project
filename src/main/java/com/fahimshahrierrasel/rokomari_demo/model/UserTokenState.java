@@ -1,25 +1,36 @@
 package com.fahimshahrierrasel.rokomari_demo.model;
 
 public class UserTokenState {
-    private String access_token;
+    private String token;
+    private String jwt_token;
     private Long expires_in;
 
     public UserTokenState() {
-        this.access_token = null;
+        this.token = null;
+        this.jwt_token = null;
         this.expires_in = null;
     }
 
-    public UserTokenState(String access_token, long expires_in) {
-        this.access_token = access_token;
+    public UserTokenState(String token, String jwt_token, long expires_in) {
+        this.token = token;
+        this.jwt_token = jwt_token;
         this.expires_in = expires_in;
     }
 
-    public String getAccess_token() {
-        return access_token;
+    public String getToken() {
+        return token;
     }
 
-    public void setAccess_token(String access_token) {
-        this.access_token = access_token;
+    public void setToken(String token) {
+        this.token = token;
+    }
+
+    public String getJwt_token() {
+        return jwt_token;
+    }
+
+    public void setJwt_token(String jwt_token) {
+        this.jwt_token = jwt_token;
     }
 
     public Long getExpires_in() {
